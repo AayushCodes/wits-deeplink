@@ -13,6 +13,7 @@ type CreateSessionProps = {
   onSessionCreated: (data: {
     session: SessionConfig;
     sessionSigner: Account;
+    signerPrivateKey: `0x${string}`;
   }) => void;
 };
 
@@ -23,7 +24,8 @@ export function CreateSession({ onSessionCreated }: CreateSessionProps) {
   async function handleCreateSession() {
     try {
       setIsCreating(true);
-      const sessionSigner = privateKeyToAccount(generatePrivateKey());
+      const signerPrivateKey = generatePrivateKey();
+      const sessionSigner = privateKeyToAccount(signerPrivateKey);
 
       const { session } = await createSessionAsync({
         session: {
@@ -102,7 +104,7 @@ export function CreateSession({ onSessionCreated }: CreateSessionProps) {
         }),
       });
 
-      onSessionCreated({ session, sessionSigner });
+      onSessionCreated({ session, sessionSigner, signerPrivateKey });
     } catch (error) {
       console.error("Failed to create session:", error);
     } finally {
@@ -111,7 +113,11 @@ export function CreateSession({ onSessionCreated }: CreateSessionProps) {
   }
 
   return (
-    <Button onClick={handleCreateSession} disabled={isCreating}>
+    <Button
+      onClick={handleCreateSession}
+      disabled={isCreating}
+      className="text-white"
+    >
       {isCreating ? "Creating Session..." : "Create Session"}
     </Button>
   );

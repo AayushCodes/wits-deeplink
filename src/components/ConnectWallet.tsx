@@ -1,7 +1,6 @@
 import { useLoginWithAbstract } from "@abstract-foundation/agw-react";
+import { Button, Spinner } from "@radix-ui/themes";
 import { useAccount } from "wagmi";
-import Image from "next/image";
-import { Button } from "@radix-ui/themes";
 
 export function ConnectWallet() {
   const { login, logout } = useLoginWithAbstract();
@@ -9,10 +8,8 @@ export function ConnectWallet() {
 
   if (status === "reconnecting" || status === "connecting") {
     return (
-      <div className="flex items-center justify-center w-10 h-10">
-        <div className="animate-spin">
-          <Image src="/abs.svg" alt="Loading" width={24} height={24} />
-        </div>
+      <div className="flex items-center justify-center w-10 h-10 text-white">
+        <Spinner />
       </div>
     );
   }
@@ -45,14 +42,6 @@ export function ConnectWallet() {
       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] hover:text-white dark:hover:bg-[#e0e0e0] dark:hover:text-black text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 font-[family-name:var(--font-roobert)] mx-auto w-fit"
       onClick={login}
     >
-      <Image
-        className="dark:invert"
-        src="/abs.svg"
-        alt="Abstract logomark"
-        width={20}
-        height={20}
-        style={{ filter: "brightness(0)" }}
-      />
       Sign in with Abstract
     </button>
   );

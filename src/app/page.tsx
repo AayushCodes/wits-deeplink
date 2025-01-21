@@ -2,8 +2,9 @@
 
 import { ConnectWallet } from "@/components/ConnectWallet";
 import { CreateSession } from "@/components/CreateSession";
+import { unityBaseUrl } from "@/constants";
 import { SessionConfig } from "@abstract-foundation/agw-client/sessions";
-import { Heading } from "@radix-ui/themes";
+import { Button, Heading } from "@radix-ui/themes";
 import { useState } from "react";
 import { Account } from "viem";
 import { useAccount } from "wagmi";
@@ -11,6 +12,7 @@ import { useAccount } from "wagmi";
 type SessionData = {
   session: SessionConfig;
   sessionSigner: Account;
+  signerPrivateKey: `0x${string}`;
 } | null;
 
 export default function Home() {
@@ -21,6 +23,17 @@ export default function Home() {
     setSessionData(data);
   };
 
+  const handleUnityRedirect = () => {
+    const url = `${unityBaseUrl}?signerAddress=${sessionData?.sessionSigner.address}&signerPrivateKey=${sessionData?.signerPrivateKey}&sessionTimeout=${sessionData?.session.expiresAt}`;
+
+    // Fallback: try opening in new window after a short delay
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        window.open(url, "_blank");
+      }
+    }, 100);
+  };
+
   return (
     <div className="flex flex-col gap-20 items-center justify-center min-h-screen bg-black overflow-hidden text-white">
       <div className="flex flex-col items-center w-full max-w-md space-y-6 mx-auto">
@@ -29,6 +42,10 @@ export default function Home() {
 
         {status === "connected" && !sessionData && (
           <CreateSession onSessionCreated={handleSessionCreated} />
+        )}
+
+        {sessionData && (
+          <Button onClick={handleUnityRedirect}>Back to game</Button>
         )}
       </div>
     </div>
